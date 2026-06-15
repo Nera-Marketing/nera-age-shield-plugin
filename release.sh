@@ -124,6 +124,16 @@ else
   find "$WORK_DIR" -name '*.bak' -type f -delete 2>/dev/null || true
 fi
 
+# Mirror logo.png into the PUC icon filenames so the plugin shows its logo on the
+# Plugins list and Dashboard → Updates screens. PUC auto-detects assets/icon-128x128.png
+# (1x), assets/icon-256x256.png (2x) and assets/icon.svg from the installed package.
+if [ -f "$WORK_DIR/logo.png" ]; then
+  mkdir -p "$WORK_DIR/assets"
+  cp -f "$WORK_DIR/logo.png" "$WORK_DIR/assets/icon-128x128.png"
+  cp -f "$WORK_DIR/logo.png" "$WORK_DIR/assets/icon-256x256.png"
+  echo "▶ Mirrored logo.png → assets/icon-128x128.png + icon-256x256.png (update-page logo)"
+fi
+
 echo "▶ Setting * Version + NERA_DCMS_VERSION to ${VERSION} in release tree..."
 PHP_MAIN="$WORK_DIR/${PLUGIN_SLUG}.php"
 if [ ! -f "$PHP_MAIN" ]; then
