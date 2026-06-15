@@ -1,8 +1,9 @@
 <?php
 /**
  * Plugin Name: Nera – DCMS Age Gate
+ * Plugin URI: https://github.com/Nera-Marketing/nera-age-shield-plugin
  * Description: DCMS Voluntary Code (Clause 1.1) age verification — collects and verifies a real date of birth and blocks anyone under 18 from entering prize draws.
- * Version: 1.1.6
+ * Version: 1.1.8
  * Author: Nera
  * Text Domain: nera-dcms-age-gate
  * Requires at least: 6.0
@@ -19,6 +20,16 @@ define( 'NERA_DCMS_VERSION', '1.1.8' );
 define( 'NERA_DCMS_PLUGIN_FILE', __FILE__ );
 define( 'NERA_DCMS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NERA_DCMS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
+/**
+ * GitHub updates (Plugin Update Checker v5.5).
+ *
+ * Disable: `define( 'NERA_DCMS_DISABLE_GITHUB_UPDATES', true );`
+ * Private repo: `define( 'NERA_DCMS_GITHUB_TOKEN', 'ghp_...' );`
+ * Repo URL: `define( 'NERA_DCMS_GITHUB_REPO_URL', 'https://github.com/Owner/repo/' );` or filter `nera_dcms_github_repo_url`.
+ */
+require_once NERA_DCMS_PLUGIN_DIR . 'includes/github-updates.php';
+nera_dcms_bootstrap_plugin_update_checker( __FILE__ );
 
 /**
  * Minimum age (years) required to participate.
