@@ -1,4 +1,4 @@
-/* Nera DCMS Age Gate — dialog overlay, card, and site-wide 18+ badge. */
+/* Nera DCMS Age Gate — dialog overlay, card. */
 
 /* ------------------------------------------------------------------
    Overlay (full-screen backdrop)
@@ -82,42 +82,6 @@
 @keyframes nera-slide-up {
 	from { opacity: 0; transform: translateY(18px) scale(0.98); }
 	to   { opacity: 1; transform: translateY(0)    scale(1); }
-}
-
-/* ------------------------------------------------------------------
-   Site-wide 18+ badge (fixed bottom-right corner)
-   ------------------------------------------------------------------ */
-.nera-age-badge {
-	position: fixed;
-	right: 16px;
-	bottom: 16px;
-	z-index: 9990;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	min-width: 40px;
-	height: 40px;
-	padding: 0 10px;
-	border-radius: 9999px;
-	background: var(--color-primary, #111827);
-	color: #ffffff;
-	font-size: 13px;
-	font-weight: 700;
-	line-height: 1;
-	letter-spacing: 0.02em;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-	pointer-events: none;
-	user-select: none;
-}
-
-@media (max-width: 640px) {
-	.nera-age-badge {
-		right: 12px;
-		bottom: 12px;
-		min-width: 34px;
-		height: 34px;
-		font-size: 12px;
-	}
 }
 
 /* ------------------------------------------------------------------

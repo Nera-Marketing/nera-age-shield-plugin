@@ -1,6 +1,6 @@
 <?php
 /**
- * Frontend: dialog-based DOB verification, asset loading, DOB field markup, and the site-wide 18+ badge.
+ * Frontend: dialog-based DOB verification, asset loading, and DOB field markup.
  *
  * @package Nera_DCMS_Age_Gate
  */
@@ -20,7 +20,6 @@ class Nera_DCMS_Frontend {
 	 */
 	public static function init() {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
-		add_action( 'wp_footer', array( __CLASS__, 'render_badge' ) );
 		add_action( 'wp_footer', array( __CLASS__, 'render_dialog' ) );
 	}
 
@@ -233,23 +232,5 @@ class Nera_DCMS_Frontend {
 			</div>
 		</div>
 		<?php
-	}
-
-	/**
-	 * Site-wide persistent 18+ badge.
-	 */
-	public static function render_badge() {
-		$min = (int) Nera_DCMS_Age_Validator::min_age();
-		printf(
-			'<div class="nera-age-badge" aria-label="%1$s" title="%1$s">%2$d+</div>',
-			esc_attr(
-				sprintf(
-					/* translators: %d: minimum age */
-					__( 'This site is for users aged %d and over', 'nera-dcms-age-gate' ),
-					$min
-				)
-			),
-			$min
-		);
 	}
 }
