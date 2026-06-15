@@ -11,7 +11,7 @@
 	"requires": "6.0",
 	"tested": "6.8",
 	"requires_php": "7.4",
-	"last_updated": "2026-06-15 12:00:00",
+	"last_updated": "2026-06-15 03:18:14",
 
 	"upgrade_notice": "Update for the latest DCMS age verification fixes and WooCommerce compatibility.",
 
