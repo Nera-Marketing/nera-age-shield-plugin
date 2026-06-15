@@ -41,6 +41,30 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# Prefer a working PHP (system php may be broken on Local by Flywheel Mac setups).
+resolve_php() {
+  if [ -n "${PHP_BIN:-}" ] && "$PHP_BIN" -v >/dev/null 2>&1; then
+    printf '%s' "$PHP_BIN"
+    return 0
+  fi
+  if command -v php >/dev/null 2>&1 && php -v >/dev/null 2>&1; then
+    printf '%s' "php"
+    return 0
+  fi
+  local local_php="${HOME}/Library/Application Support/Local/lightning-services/php-8.2.29+0/bin/darwin-arm64/bin/php"
+  if [ -x "$local_php" ] && "$local_php" -v >/dev/null 2>&1; then
+    printf '%s' "$local_php"
+    return 0
+  fi
+  return 1
+}
+
+PHP_BIN="$(resolve_php || true)"
+if [ -z "$PHP_BIN" ]; then
+  echo "ERROR: No working PHP found. Install PHP or set PHP_BIN to a working binary."
+  exit 1
+fi
+
 # ── 1. Resolve version ────────────────────────────────────────────────────────
 if [ -n "${1:-}" ]; then
   VERSION="${1#v}"
@@ -149,9 +173,9 @@ mkdir -p "$STAGE_ZIP_PARENT"
 cp -a "$WORK_DIR" "$STAGE_ZIP_PARENT/${PLUGIN_SLUG}"
 STAGE_SLUG_DIR="$STAGE_ZIP_PARENT/${PLUGIN_SLUG}"
 
-if command -v php >/dev/null 2>&1 && [ -f "$PLUGIN_DIR/build-wp-release-zip.php" ]; then
+if command -v "$PHP_BIN" >/dev/null 2>&1 && [ -f "$PLUGIN_DIR/build-wp-release-zip.php" ]; then
   echo "▶ Building zip with PHP ZipArchive (WP-safe paths)..."
-  php "$PLUGIN_DIR/build-wp-release-zip.php" "$STAGE_SLUG_DIR" "$ZIP_PATH"
+  "$PHP_BIN" "$PLUGIN_DIR/build-wp-release-zip.php" "$STAGE_SLUG_DIR" "$ZIP_PATH"
 elif command -v zip >/dev/null 2>&1; then
   ( cd "$STAGE_ZIP_PARENT" && zip -rq "$ZIP_PATH" "${PLUGIN_SLUG}" )
 else
@@ -219,26 +243,27 @@ fi
 if [ -n "$GH_CMD" ]; then
   echo "▶ Checking gh auth (github.com)..."
   if ! ( export GH_HOST=github.com && "$GH_CMD" auth status -h github.com >/dev/null 2>&1 ); then
-    echo "ERROR: gh is not logged in for github.com."
-    echo "       Run: gh auth login -h github.com"
-    echo "       Zip kept at: $ZIP_PATH"
-    exit 1
+    echo ""
+    echo "⚠  gh is not logged in for github.com — tag pushed, but GitHub Release not created."
+    echo "    Zip kept at: $ZIP_PATH"
+    echo "    1) gh auth login -h github.com -p ssh -s repo"
+    echo "    2) ./publish-github-release.sh ${VERSION}"
+  else
+    echo "▶ Publishing GitHub Release $TAG..."
+    (
+      export GH_HOST=github.com
+      if "$GH_CMD" release view "$TAG" --repo "$GITHUB_REPO" >/dev/null 2>&1; then
+        "$GH_CMD" release upload "$TAG" "$ZIP_PATH" --repo "$GITHUB_REPO" --clobber
+      else
+        "$GH_CMD" release create "$TAG" \
+          --repo "$GITHUB_REPO" \
+          --title "Release $TAG" \
+          --notes "Release $TAG" \
+          "$ZIP_PATH"
+      fi
+    )
+    rm -f "$ZIP_PATH"
   fi
-
-  echo "▶ Publishing GitHub Release $TAG..."
-  (
-    export GH_HOST=github.com
-    if "$GH_CMD" release view "$TAG" --repo "$GITHUB_REPO" >/dev/null 2>&1; then
-      "$GH_CMD" release upload "$TAG" "$ZIP_PATH" --repo "$GITHUB_REPO" --clobber
-    else
-      "$GH_CMD" release create "$TAG" \
-        --repo "$GITHUB_REPO" \
-        --title "$TAG" \
-        --notes "Release $TAG" \
-        "$ZIP_PATH"
-    fi
-  )
-  rm -f "$ZIP_PATH"
 else
   echo ""
   echo "⚠  gh (GitHub CLI) not found — skipped GitHub Release upload."
