@@ -1,9 +1,9 @@
 {
 	"name": "Nera – DCMS Age Gate",
 	"slug": "nera-dcms-age-gate",
-	"version": "1.0.2",
+	"version": "1.1.9",
 	"homepage": "https://github.com/Nera-Marketing/nera-age-shield-plugin",
-	"download_url": "https://github.com/Nera-Marketing/nera-age-shield-plugin/releases/download/v1.0.2/nera-dcms-age-gate-1.0.2.zip",
+	"download_url": "https://github.com/Nera-Marketing/nera-age-shield-plugin/releases/download/v1.1.9/nera-dcms-age-gate-1.1.9.zip",
 
 	"author": "Nera",
 	"author_homepage": "https://github.com/Nera-Marketing",
@@ -11,9 +11,9 @@
 	"requires": "6.0",
 	"tested": "6.8",
 	"requires_php": "7.4",
-	"last_updated": "2026-06-15 15:30:00",
+	"last_updated": "2026-06-15 16:00:00",
 
-	"upgrade_notice": "Adds plugin logo and icons for update screens; frontend and GitHub update improvements.",
+	"upgrade_notice": "Adds plugin logo and icons for update screens; frontend and GitHub update checker improvements.",
 
 	"sections": {
 		"description": "<p>DCMS Voluntary Code (Clause 1.1) age verification for prize draws — collects and verifies date of birth and blocks anyone under 18 from entering. Requires <strong>WooCommerce</strong>.</p>",
